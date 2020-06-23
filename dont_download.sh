@@ -817,7 +817,7 @@ ini_settings_menu_update_all() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Update All INI Settings" \
-                --menu "\nThese options will be stored in '$(basename ${EXPORTED_INI_PATH})'\n\n" 50 80 25 \
+                --menu "\Settings loaded from '$(basename ${EXPORTED_INI_PATH})'\n\n" 16 75 25 \
                 "1 Main Updater"  "$(ini_settings_active_tag ${MAIN_UPDATER}) Main MiSTer cores and resources" \
                 "2 Jotego Updater" "$(ini_settings_active_tag ${JOTEGO_UPDATER}) Cores made by Jotego" \
                 "3 Unofficial Updater"  "$(ini_settings_active_tag ${UNOFFICIAL_UPDATER}) Some unofficial cores" \
@@ -910,7 +910,7 @@ ini_settings_menu_cancel() {
         esac
     else
         set +e
-        dialog --keep-window --msgbox "Pressed ESC/Back"$'\n'"Aborting Update All..." 6 30
+        dialog --keep-window --msgbox "Pressed ESC/Cancel"$'\n'"Aborting Update All..." 6 30
         set -e
     fi
 
@@ -1001,7 +1001,7 @@ ini_settings_menu_main_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Main Updater Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAIN_UPDATER_INI})" 16 75 25 \
                 "${ACTIVATE}" "Activated: ${MAIN_UPDATER}" \
                 "2 Cores versions" "$([[ ${ENCC_FORKS} == 'true' ]] && echo 'DB9 / SNAC8 forks with ENCC' || echo 'Official Cores from MiSTer-devel')" \
                 "3 INI file"  "$(basename ${MAIN_UPDATER_INI})" \
@@ -1067,7 +1067,7 @@ ini_settings_menu_jotego_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Jotego Updater Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${JOTEGO_UPDATER_INI})" 12 75 25 \
                 "${ACTIVATE}" "Activated: ${JOTEGO_UPDATER}" \
                 "2 INI file"  "$(basename ${JOTEGO_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
@@ -1125,7 +1125,7 @@ ini_settings_menu_unofficial_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Unofficial Updater Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${UNOFFICIAL_UPDATER_INI})" 12 75 25 \
                 "${ACTIVATE}" "Activated: ${UNOFFICIAL_UPDATER}" \
                 "2 INI file"  "$(basename ${UNOFFICIAL_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
@@ -1181,7 +1181,7 @@ ini_settings_menu_llapi_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "LLAPI Updater Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${LLAPI_UPDATER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${LLAPI_UPDATER}" \
                 "2 INI file"  "$(basename ${LLAPI_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
@@ -1239,7 +1239,7 @@ ini_settings_menu_mame_getter() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "MAME-Getter Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAME_GETTER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${MAME_GETTER}" \
                 "2 INI file"  "$(basename ${MAME_GETTER_INI})" \
                 "3 MAME ROM directory" "${ROMMAME}" \
@@ -1297,7 +1297,7 @@ ini_settings_menu_hbmame_getter() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "HBMAME-Getter Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${HBMAME_GETTER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${HBMAME_GETTER}" \
                 "2 INI file"  "$(basename ${HBMAME_GETTER_INI})" \
                 "3 HBMAME ROM directory" "${ROMHBMAME}" \
@@ -1355,7 +1355,7 @@ ini_settings_menu_arcade_organizer() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Arcade Organizer Settings" \
-                --menu "Pick your option" 50 81 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${ARCADE_ORGANIZER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${ARCADE_ORGANIZER}" \
                 "2 INI file"  "$(basename ${ARCADE_ORGANIZER_INI})" \
                 "3 Skip MRA-Alternatives" "${SKIPALTS}" \
@@ -1380,6 +1380,16 @@ ini_settings_menu_arcade_organizer() {
         fi
     done
     rm ${TMP}
+}
+
+ini_settings_menu_descr_text() {
+    local INI_A="${1}"
+    local INI_B="${2}"
+    if [[ "${INI_A}" == "${INI_B}" ]] ; then
+        echo "Settings loaded from '${INI_A}'"
+    else
+        echo "Settings loaded from '${INI_A}' and '${INI_B}'"
+    fi
 }
 
 get_var_from_ini_file() {
