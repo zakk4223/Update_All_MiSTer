@@ -84,7 +84,7 @@ if [[ "${DEBUG_UPDATER:-false}" != "true" ]] || [ ! -f dont_download.sh ] ; then
         --fail \
         --location \
         -o "${SCRIPT_PATH}" \
-        "${REPOSITORY_URL}/blob/master/dont_download.sh?raw=true"
+        "${REPOSITORY_URL}/blob/ini_settings_wip/dont_download.sh?raw=true"
 else
     cp dont_download.sh ${SCRIPT_PATH}
 fi
