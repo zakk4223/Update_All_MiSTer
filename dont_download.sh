@@ -38,6 +38,10 @@ UNOFFICIAL_UPDATER_INI="${EXPORTED_INI_PATH}" # Probably /media/fat/Scripts/upda
 LLAPI_UPDATER="false"
 LLAPI_UPDATER_INI="${EXPORTED_INI_PATH}" # Probably /media/fat/Scripts/update_all.ini
 
+BIOS_GETTER="true"
+BIOS_GETTER_INI="/media/fat/Scripts/update_bios-getter.ini"
+BIOS_GETTER_FORCE_FULL_RESYNC="false"
+
 MAME_GETTER="true"
 MAME_GETTER_INI="/media/fat/Scripts/update_mame-getter.ini"
 MAME_GETTER_FORCE_FULL_RESYNC="false"
@@ -84,6 +88,20 @@ initialize_global_log() {
     trap "mv ${GLOG_TEMP} ${GLOG_PATH}" EXIT
 }
 
+load_ini_file() {
+    local INI_PATH="${1}"
+
+    if [ ! -f ${INI_PATH} ] ; then
+        return
+    fi
+
+    local TMP=$(mktemp)
+    dos2unix < "${INI_PATH}" 2> /dev/null | grep -v "^exit" > ${TMP} || true
+
+    source ${TMP}
+    rm -f ${TMP} 
+}
+
 initialize() {
     initialize_global_log
 
@@ -95,12 +113,7 @@ initialize() {
     echo "Reading INI file '${EXPORTED_INI_PATH}':"
     if [ -f ${EXPORTED_INI_PATH} ] ; then
         cp ${EXPORTED_INI_PATH} ${INI_PATH} 2> /dev/null || true
-
-        TMP=$(mktemp)
-        dos2unix < "${INI_PATH}" 2> /dev/null | grep -v "^exit" > ${TMP} || true
-
-        source ${TMP}
-        rm -f ${TMP}
+        load_ini_file "${INI_PATH}"
         echo "OK."
     else
         echo "Not found."
@@ -501,11 +514,7 @@ find_mras() {
     fi
 }
 
-run_update_all() {
-
-    initialize
-
-    echo
+sequence() {
     echo "Sequence:"
     if [[ "${MAIN_UPDATER}" == "true" ]] ; then
         if [[ "${ENCC_FORKS}" == "true" ]] ; then
@@ -538,8 +547,241 @@ run_update_all() {
     if [[ "${UPDATE_ALL_PC_UPDATER}" == "true" ]] && [ ! -f ../Scripts/update_all.sh ] ; then
         echo "- update_all.sh Script"
     fi
+}
 
-    sleep ${WAIT_TIME_FOR_READING}
+boolean_swap() {
+    local BOOLEAN="${1}"
+    if [[ ${BOOLEAN} == "true" ]] ; then
+        echo "false"
+    else
+        echo "true"
+    fi
+}
+
+ini_settings_menu_jotego_updater() {
+    local TMP=$(mktemp)
+    local DEFAULT_SELECTION="1"
+    while true ; do
+        dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Jotego Updater Settings" \
+            --menu "Pick your option" 50 81 25 \
+            "1" "Activated: ${JOTEGO_UPDATER}" \
+            "2"  "INI file: $(basename ${JOTEGO_UPDATER_INI})" \
+            "BACK"  "" 2> ${TMP}
+        DEFAULT_SELECTION="$(cat ${TMP})"
+        case "${DEFAULT_SELECTION}" in
+            "1")
+                JOTEGO_UPDATER="$(boolean_swap ${JOTEGO_UPDATER})"
+                ;;
+            "2")
+                if [[ "${JOTEGO_UPDATER_INI}" == "${EXPORTED_INI_PATH}" ]] ; then
+                    JOTEGO_UPDATER_INI="update_jtcores.ini"
+                else
+                    JOTEGO_UPDATER_INI="${EXPORTED_INI_PATH}"
+                fi
+                ;;
+            "BACK")
+                break;
+                ;;
+        esac
+    done
+    rm ${TMP}
+}
+
+create_ini_from() {
+    local INI_SOURCE="${1}"
+    local INI_TARGET="${2}"
+    rm ${INI_TARGET} 2> /dev/null || true
+    if [ -f ${INI_SOURCE} ] ; then
+        cp ${INI_SOURCE} ${INI_TARGET}
+    else
+        touch ${INI_TARGET}
+    fi
+}
+
+####### DEFAULTS FROM MAIN UPDATER #######
+DEFAULT_DOWNLOAD_NEW_CORES="true"
+DEFAULT_UPDATE_CHEATS="once"
+DEFAULT_MAME_ALT_ROMS="true"
+DEFAULT_UPDATE_LINUX="true"
+DEFAULT_AUTOREBOOT="true"
+
+ini_settings_menu_main_updater() {
+    local TMP=$(mktemp)
+    local DEFAULT_SELECTION="1 $(ini_settings_active_action ${MAIN_UPDATER})"
+    while true ; do
+        (
+            ####### DEFAULTS FROM MAIN UPDATER USED HERE #######
+
+            local DOWNLOAD_NEW_CORES="${DEFAULT_DOWNLOAD_NEW_CORES}"
+            local UPDATE_CHEATS="${DEFAULT_UPDATE_CHEATS}"
+            local MAME_ALT_ROMS="${DEFAULT_MAME_ALT_ROMS}"
+            local UPDATE_LINUX="${DEFAULT_UPDATE_LINUX}"
+            local AUTOREBOOT="${DEFAULT_AUTOREBOOT}"
+
+            #####################################################
+
+            local ACTIVATE="1 $(ini_settings_active_action ${MAIN_UPDATER})"
+
+            load_ini_file "${TMP_UPDATE_ALL_INI}"
+            load_ini_file "${TMP_MAIN_UPDATER_INI}"
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Main Updater Settings" \
+                --menu "Pick your option" 50 81 25 \
+                "${ACTIVATE}" "Activated: ${MAIN_UPDATER}" \
+                "2 Cores versions" "$([[ ${ENCC_FORKS} == 'true' ]] && echo 'DB9 / SNAC8 forks with ENCC' || echo 'Official Cores from MiSTer-devel')" \
+                "3 INI file"  "$(basename ${MAIN_UPDATER_INI})" \
+                "4 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
+                "5 Install MRA-Alternatives" "${MAME_ALT_ROMS}" \
+                "6 Install Cheats" "${UPDATE_CHEATS}" \
+                "7 Install new Linux versions" "${UPDATE_LINUX}" \
+                "8 Autoreboot (if needed)" "${AUTOREBOOT}" \
+                "BACK"  "" 2> ${TMP}
+        )
+        DEFAULT_SELECTION="$(cat ${TMP})"
+        case "${DEFAULT_SELECTION}" in
+            "${ACTIVATE}")
+                MAIN_UPDATER="$(boolean_swap ${MAIN_UPDATER})"
+                ;;
+            "2 Cores versions")
+                ENCC_FORKS="$(boolean_swap ${ENCC_FORKS})"
+                ;;
+            "3 INI file")
+                if [[ "${MAIN_UPDATER_INI}" == "${EXPORTED_INI_PATH}" ]] ; then
+                    MAIN_UPDATER_INI="update.ini"
+                else
+                    MAIN_UPDATER_INI="${EXPORTED_INI_PATH}"
+                fi
+                ;;
+            "4 Install new Cores")
+                (
+                    local DOWNLOAD_NEW_CORES="true"
+                    load_ini_file "${MAIN_UPDATER_INI}"
+                    DOWNLOAD_NEW_CORES="$(boolean_swap ${DOWNLOAD_NEW_CORES})"
+                )
+                ;;
+            "BACK")
+                break;
+                ;;
+        esac
+    done
+    rm ${TMP}
+}
+
+ini_settings_active_tag() {
+    local ACTIVE="${1}"
+    if [[ "${ACTIVE}" == "true" ]] ; then
+        echo "Enabled. "
+    else
+        echo "Disabled."
+    fi
+}
+
+ini_settings_active_action() {
+    local ACTIVE="${1}"
+    if [[ "${ACTIVE}" == "true" ]] ; then
+        echo "Enable"
+    else
+        echo "Disable"
+    fi
+}
+
+TMP_UPDATE_ALL_INI="/tmp/ua.${EXPORTED_INI_PATH}"
+TMP_MAIN_UPDATER_INI="/tmp/ua.update.ini"
+TMP_JOTEGO_UPDATER_INI="/tmp/ua.update_jtcores.ini"
+TMP_UNOFFICIAL_UPDATER_INI="/tmp/ua.update_unofficials.ini"
+
+ini_settings_menu_update_all() {
+    create_ini_from "${EXPORTED_INI_PATH}" "${TMP_UPDATE_ALL_INI}"
+    create_ini_from "update.ini" "${TMP_MAIN_UPDATER_INI}"
+    create_ini_from "update_jtcores.ini" "${TMP_JOTEGO_UPDATER_INI}"
+    create_ini_from "update_unofficials.ini" "${TMP_UNOFFICIAL_UPDATER_INI}"
+
+    local TMP=$(mktemp)
+    local DEFAULT_SELECTION="1 Main Updater"
+    while true ; do
+        (
+            load_ini_file "${TMP_UPDATE_ALL_INI}"
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Update All INI Settings" \
+                --menu "\nThese options will be stored in '$(basename ${EXPORTED_INI_PATH})'\n\n" 50 80 25 \
+                "1 Main Updater"  "$(ini_settings_active_tag ${MAIN_UPDATER}) Main MiSTer cores and resources" \
+                "2 Jotego Updater" "$(ini_settings_active_tag ${JOTEGO_UPDATER}) Cores made by Jotego" \
+                "3 Unofficial Updater"  "$(ini_settings_active_tag ${UNOFFICIAL_UPDATER}) Some unofficial cores" \
+                "4 LLAPI Updater" "$(ini_settings_active_tag ${LLAPI_UPDATER}) Forks adapted to LLAPI" \
+                "5 BIOS Getter" "$(ini_settings_active_tag ${BIOS_GETTER}) Bios for some systems" \
+                "6 MAME Getter" "$(ini_settings_active_tag ${MAME_GETTER}) MAME ROMs for arcades" \
+                "7 HBMAME Getter" "$(ini_settings_active_tag ${HBMAME_GETTER}) HBMAME ROMs for arcades" \
+                "8 Arcade Organizer" "$(ini_settings_active_tag ${ARCADE_ORGANIZER}) Creates folder for easy navigation" \
+                "EXIT and RUN UPDATE ALL" "" 2> ${TMP}
+            DEFAULT_SELECTION="$(cat ${TMP})"
+            case "${DEFAULT_SELECTION}" in
+                "1 Main Updater") ini_settings_menu_main_updater ;;
+                "2 Jotego Updater") ini_settings_menu_jotego_updater ;;
+                "3 Unofficial Updater") ini_settings_menu_main_updater ;;
+                "4 LLAPI Updater") ini_settings_menu_main_updater ;;
+                "5 BIOS Getter") ini_settings_menu_main_updater ;;
+                "6 MAME Getter") ini_settings_menu_main_updater ;;
+                "7 HBMAME Getter") ini_settings_menu_main_updater ;;
+                "8 Arcade Organizer") ini_settings_menu_main_updater ;;
+                "9 names.txt") ini_settings_menu_main_updater ;;
+                "EXIT and RUN UPDATE ALL") break ;;
+            esac
+        )
+    done
+    rm ${TMP}
+    clear
+}
+
+countdown() {
+    local COUNTDOWN_TIME=20
+    echo
+    echo " *Press $(tput bold)UP$(tput sgr0): To enter the INI settings screen."
+    echo -n " *Press $(tput bold)DOWN$(tput sgr0): To continue now."
+    local COUNTDOWN_SELECTION="continue"
+    set +e
+    echo -e '\e[3A\e[K'
+    for (( i=0; i <= (( COUNTDOWN_TIME )); i++)); do
+        local SECONDS=$(( COUNTDOWN_TIME - i ))
+        if (( SECONDS < 10 )) ; then
+            SECONDS=" ${SECONDS}"
+        fi
+        printf "\rStarting in ${SECONDS} seconds."
+        for (( j=0; j < i; j++)); do
+            printf "."
+        done
+        read -r -s -N 1 -t 1 key
+        if [ "$key" = "A" ]; then
+                COUNTDOWN_SELECTION="menu"
+                break
+        fi
+        if [ "$key" = "B" ]; then
+                COUNTDOWN_SELECTION="continue"
+                break
+        fi
+    done
+    set -e
+    echo -e '\e[2B\e[K'
+    if [[ "${COUNTDOWN_SELECTION}" == "menu" ]] ; then
+        ini_settings_menu_update_all
+        sequence
+        sleep ${WAIT_TIME_FOR_READING}
+    fi
+}
+
+run_update_all() {
+
+    initialize
+    echo
+
+    sequence
+    echo
+
+    if [[ -t 0 || -t 1 || -t 2 ]] ; then
+        disable_global_log
+        countdown
+        enable_global_log
+    else
+        echo "Not displaying countdown because fb_terminal=0."
+        sleep ${WAIT_TIME_FOR_READING}
+    fi
 
     echo
     echo "Start time: $(date)"
@@ -688,5 +930,6 @@ run_update_all() {
 }
 
 if [[ "${UPDATE_ALL_SOURCE:-false}" != "true" ]] ; then
+    clear > /dev/null 2>&1 || true
     run_update_all
 fi
