@@ -825,7 +825,7 @@ ini_settings_menu_update_all() {
                 "5 MAME Getter" "$(ini_settings_active_tag ${MAME_GETTER}) MAME ROMs for arcades" \
                 "6 HBMAME Getter" "$(ini_settings_active_tag ${HBMAME_GETTER}) HBMAME ROMs for arcades" \
                 "7 Arcade Organizer" "$(ini_settings_active_tag ${ARCADE_ORGANIZER}) Creates folder for easy navigation" \
-                "SAVE" "Saves all changes on the INI file/s" \
+                "SAVE" "Writes all changes to the INI file/s" \
                 "EXIT and RUN UPDATE ALL" "" 2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
