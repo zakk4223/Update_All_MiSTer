@@ -1001,7 +1001,7 @@ ini_settings_menu_main_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Main Updater Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAIN_UPDATER_INI})" 16 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAIN_UPDATER_INI})" 15 75 25 \
                 "${ACTIVATE}" "Activated: ${MAIN_UPDATER}" \
                 "2 Cores versions" "$([[ ${ENCC_FORKS} == 'true' ]] && echo 'DB9 / SNAC8 forks with ENCC' || echo 'Official Cores from MiSTer-devel')" \
                 "3 INI file"  "$(basename ${MAIN_UPDATER_INI})" \
@@ -1010,7 +1010,7 @@ ini_settings_menu_main_updater() {
                 "6 Install Cheats" "${UPDATE_CHEATS}" \
                 "7 Install new Linux versions" "${UPDATE_LINUX}" \
                 "8 Autoreboot (if needed)" "${AUTOREBOOT}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1067,12 +1067,12 @@ ini_settings_menu_jotego_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Jotego Updater Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${JOTEGO_UPDATER_INI})" 12 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${JOTEGO_UPDATER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${JOTEGO_UPDATER}" \
                 "2 INI file"  "$(basename ${JOTEGO_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
                 "4 Install MRA-Alternatives" "${MAME_ALT_ROMS}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1125,12 +1125,12 @@ ini_settings_menu_unofficial_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Unofficial Updater Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${UNOFFICIAL_UPDATER_INI})" 12 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${UNOFFICIAL_UPDATER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${UNOFFICIAL_UPDATER}" \
                 "2 INI file"  "$(basename ${UNOFFICIAL_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
                 "4 Install MRA-Alternatives" "${MAME_ALT_ROMS}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1181,11 +1181,11 @@ ini_settings_menu_llapi_updater() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "LLAPI Updater Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${LLAPI_UPDATER_INI})" 11 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${LLAPI_UPDATER_INI})" 10 75 25 \
                 "${ACTIVATE}" "Activated: ${LLAPI_UPDATER}" \
                 "2 INI file"  "$(basename ${LLAPI_UPDATER_INI})" \
                 "3 Install new Cores" "${DOWNLOAD_NEW_CORES}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1239,11 +1239,11 @@ ini_settings_menu_mame_getter() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "MAME-Getter Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAME_GETTER_INI})" 11 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAME_GETTER_INI})" 10 75 25 \
                 "${ACTIVATE}" "Activated: ${MAME_GETTER}" \
                 "2 INI file"  "$(basename ${MAME_GETTER_INI})" \
                 "3 MAME ROM directory" "${ROMMAME}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1297,11 +1297,11 @@ ini_settings_menu_hbmame_getter() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "HBMAME-Getter Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${HBMAME_GETTER_INI})" 11 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${HBMAME_GETTER_INI})" 10 75 25 \
                 "${ACTIVATE}" "Activated: ${HBMAME_GETTER}" \
                 "2 INI file"  "$(basename ${HBMAME_GETTER_INI})" \
                 "3 HBMAME ROM directory" "${ROMHBMAME}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
@@ -1355,11 +1355,11 @@ ini_settings_menu_arcade_organizer() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Arcade Organizer Settings" \
-                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${ARCADE_ORGANIZER_INI})" 11 75 25 \
+                --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${ARCADE_ORGANIZER_INI})" 10 75 25 \
                 "${ACTIVATE}" "Activated: ${ARCADE_ORGANIZER}" \
                 "2 INI file"  "$(basename ${ARCADE_ORGANIZER_INI})" \
                 "3 Skip MRA-Alternatives" "${SKIPALTS}" \
-                "BACK"  "" 2> ${TMP}
+                2> ${TMP}
             DEFAULT_SELECTION="$?"
             set -e
 
