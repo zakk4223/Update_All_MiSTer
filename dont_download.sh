@@ -920,7 +920,6 @@ ini_settings_menu_cancel() {
 INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY=()
 INI_SETTINGS_FILES_TO_SAVE_RET_TEXT=
 ini_settings_files_to_save() {
-    echo > /media/fat/Scripts/diff-log
     INI_SETTINGS_FILES_TO_SAVE_RET_TEXT=""
     INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY=()
     for file in ${!SELECTED_INI_FILES[@]} ; do
