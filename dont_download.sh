@@ -817,7 +817,7 @@ ini_settings_menu_update_all() {
 
             set +e
             dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Abort" --ok-label "Select" --title "Update All INI Settings" \
-                --menu "\Settings loaded from '$(basename ${EXPORTED_INI_PATH})'\n\n" 16 75 25 \
+                --menu "Settings loaded from '$(basename ${EXPORTED_INI_PATH})'\n\n" 16 75 25 \
                 "1 Main Updater"  "$(ini_settings_active_tag ${MAIN_UPDATER}) Main MiSTer cores and resources" \
                 "2 Jotego Updater" "$(ini_settings_active_tag ${JOTEGO_UPDATER}) Cores made by Jotego" \
                 "3 Unofficial Updater"  "$(ini_settings_active_tag ${UNOFFICIAL_UPDATER}) Some unofficial cores" \
