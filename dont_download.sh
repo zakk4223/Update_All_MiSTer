@@ -920,15 +920,16 @@ ini_settings_menu_cancel() {
 INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY=()
 INI_SETTINGS_FILES_TO_SAVE_RET_TEXT=
 ini_settings_files_to_save() {
+    echo > /media/fat/Scripts/diff-log
     INI_SETTINGS_FILES_TO_SAVE_RET_TEXT=""
     INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY=()
     for file in ${!SELECTED_INI_FILES[@]} ; do
         if [ -s "${SELECTED_INI_FILES[${file}]}" ] ; then
-            if ! diff "${file}" "${SELECTED_INI_FILES[${file}]}" >> /media/fat/Scripts/diff-log 2>&1 ; then
+            if ! diff -q "${file}" "${SELECTED_INI_FILES[${file}]}" >> /media/fat/Scripts/diff-log 2>&1 ; then
                 INI_SETTINGS_FILES_TO_SAVE_RET_TEXT="${INI_SETTINGS_FILES_TO_SAVE_RET_TEXT}"$'\n'"${file}"
                 INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY+=("${file}")
             fi
-            echo "One went" >> /media/fat/Scripts/diff-log
+            echo "One went: ! diff -q '${file}' '${SELECTED_INI_FILES[${file}]}'" >> /media/fat/Scripts/diff-log
             echo >> /media/fat/Scripts/diff-log
         fi
     done
