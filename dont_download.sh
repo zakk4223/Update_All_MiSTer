@@ -941,7 +941,7 @@ ini_settings_menu_save() {
 
     if [ ${#INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY[@]} -eq 0 ] ; then
         set +e
-        dialog --keep-window --msgbox "There are no changes to be saved" 0 0
+        dialog --keep-window --msgbox "No changes to save" 5 22
         set -e
         return
     fi
