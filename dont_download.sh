@@ -926,9 +926,8 @@ ini_settings_files_to_save() {
         if ! diff -q "${file}" "${SELECTED_INI_FILES[${file}]}" >> /dev/null 2>&1 && \
             { grep -q '[^[:space:]]' "${file}" || grep -q '[^[:space:]]' "${SELECTED_INI_FILES[${file}]}"; }
         then
-                INI_SETTINGS_FILES_TO_SAVE_RET_TEXT="${INI_SETTINGS_FILES_TO_SAVE_RET_TEXT}"$'\n'"${file}"
-                INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY+=("${file}")
-            fi
+            INI_SETTINGS_FILES_TO_SAVE_RET_TEXT="${INI_SETTINGS_FILES_TO_SAVE_RET_TEXT}"$'\n'"${file}"
+            INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY+=("${file}")
         fi
     done
 }
