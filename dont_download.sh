@@ -816,7 +816,7 @@ ini_settings_menu_update_all() {
             fi
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Update All INI Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Abort" --ok-label "Select" --title "Update All INI Settings" \
                 --menu "\Settings loaded from '$(basename ${EXPORTED_INI_PATH})'\n\n" 16 75 25 \
                 "1 Main Updater"  "$(ini_settings_active_tag ${MAIN_UPDATER}) Main MiSTer cores and resources" \
                 "2 Jotego Updater" "$(ini_settings_active_tag ${JOTEGO_UPDATER}) Cores made by Jotego" \
@@ -871,7 +871,7 @@ ini_settings_menu_exit_and_run() {
     if [ ${#INI_SETTINGS_FILES_TO_SAVE_RET_ARRAY[@]} -ge 1 ] ; then
         set +e
         dialog --keep-window --title "INI file/s were not saved" \
-            --yesno "Do you really want to run Update All without saving your changes?"$'\n'"(current changes will apply only for the this run)" \
+            --yesno "Do you really want to run Update All without saving your changes?"$'\n'"(current changes will apply only for this run)" \
             7 70
         local SURE_RET=$?
         set -e
@@ -910,7 +910,7 @@ ini_settings_menu_cancel() {
         esac
     else
         set +e
-        dialog --keep-window --msgbox "Pressed ESC/Cancel"$'\n'"Aborting Update All..." 6 30
+        dialog --keep-window --msgbox "Pressed ESC/Abort"$'\n'"Closing Update All..." 6 30
         set -e
     fi
 
@@ -1000,7 +1000,7 @@ ini_settings_menu_main_updater() {
             local ACTIVATE="1 $(ini_settings_active_action ${MAIN_UPDATER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Main Updater Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "Main Updater Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAIN_UPDATER_INI})" 16 75 25 \
                 "${ACTIVATE}" "Activated: ${MAIN_UPDATER}" \
                 "2 Cores versions" "$([[ ${ENCC_FORKS} == 'true' ]] && echo 'DB9 / SNAC8 forks with ENCC' || echo 'Official Cores from MiSTer-devel')" \
@@ -1066,7 +1066,7 @@ ini_settings_menu_jotego_updater() {
             local ACTIVATE="1 $(ini_settings_active_action ${JOTEGO_UPDATER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Jotego Updater Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "Jotego Updater Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${JOTEGO_UPDATER_INI})" 12 75 25 \
                 "${ACTIVATE}" "Activated: ${JOTEGO_UPDATER}" \
                 "2 INI file"  "$(basename ${JOTEGO_UPDATER_INI})" \
@@ -1124,7 +1124,7 @@ ini_settings_menu_unofficial_updater() {
             local ACTIVATE="1 $(ini_settings_active_action ${UNOFFICIAL_UPDATER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Unofficial Updater Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "Unofficial Updater Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${UNOFFICIAL_UPDATER_INI})" 12 75 25 \
                 "${ACTIVATE}" "Activated: ${UNOFFICIAL_UPDATER}" \
                 "2 INI file"  "$(basename ${UNOFFICIAL_UPDATER_INI})" \
@@ -1180,7 +1180,7 @@ ini_settings_menu_llapi_updater() {
             local ACTIVATE="1 $(ini_settings_active_action ${LLAPI_UPDATER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "LLAPI Updater Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "LLAPI Updater Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${LLAPI_UPDATER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${LLAPI_UPDATER}" \
                 "2 INI file"  "$(basename ${LLAPI_UPDATER_INI})" \
@@ -1238,7 +1238,7 @@ ini_settings_menu_mame_getter() {
             local ACTIVATE="1 $(ini_settings_active_action ${MAME_GETTER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "MAME-Getter Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "MAME-Getter Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${MAME_GETTER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${MAME_GETTER}" \
                 "2 INI file"  "$(basename ${MAME_GETTER_INI})" \
@@ -1296,7 +1296,7 @@ ini_settings_menu_hbmame_getter() {
             local ACTIVATE="1 $(ini_settings_active_action ${HBMAME_GETTER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "HBMAME-Getter Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "HBMAME-Getter Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${HBMAME_GETTER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${HBMAME_GETTER}" \
                 "2 INI file"  "$(basename ${HBMAME_GETTER_INI})" \
@@ -1354,7 +1354,7 @@ ini_settings_menu_arcade_organizer() {
             local ACTIVATE="1 $(ini_settings_active_action ${ARCADE_ORGANIZER})"
 
             set +e
-            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --title "Arcade Organizer Settings" \
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "Arcade Organizer Settings" \
                 --menu "$(ini_settings_menu_descr_text $(basename ${EXPORTED_INI_PATH}) ${ARCADE_ORGANIZER_INI})" 11 75 25 \
                 "${ACTIVATE}" "Activated: ${ARCADE_ORGANIZER}" \
                 "2 INI file"  "$(basename ${ARCADE_ORGANIZER_INI})" \
