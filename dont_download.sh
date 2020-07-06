@@ -87,7 +87,7 @@ LAST_MRA_PROCESSING_PATH=
 BIOS_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_BIOS_SCRIPTS/master/bios-getter.sh"
 MAME_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_MAME_SCRIPTS/master/mame-merged-set-getter.sh"
 HBMAME_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_MAME_SCRIPTS/master/hbmame-merged-set-getter.sh"
-ARCADE_ORGANIZER_URL="https://raw.githubusercontent.com/MAME-GETTER/_arcade-organizer/master/_arcade-organizer.sh"
+ARCADE_ORGANIZER_URL="https://raw.githubusercontent.com/theypsilon/_arcade-organizer/master/_arcade-organizer.sh"
 
 enable_global_log() {
     if [[ "${UPDATE_ALL_OS}" == "WINDOWS" ]] ; then return ; fi
@@ -353,7 +353,9 @@ run_mame_getter_script() {
         fi
 
         set +e
-        if [ -s ${MRA_INPUT} ] ; then
+        if [[ "${SCRIPT_TITLE}" == "_ARCADE-ORGANIZER" ]] ; then
+            ${SCRIPT_PATH} --optimized
+        elif [ -s ${MRA_INPUT} ] ; then
             ${SCRIPT_PATH} --input-file ${MRA_INPUT}
         else
             ${SCRIPT_PATH}
@@ -546,6 +548,13 @@ prepare_arcade_organizer() {
     local SCRIPT_INI="${2}"
 
     read_ini_arcade_organizer "${SCRIPT_PATH}" "${SCRIPT_INI}"
+}
+
+prepare_arcade_organizer_2() {
+    local SCRIPT_PATH="${1}"
+    local SCRIPT_INI="${2}"
+
+    read_ini_arcade_organizer "${SCRIPT_PATH}" "${SCRIPT_INI}"
 
     if [ ! -d "${ARCADE_ORGANIZER_ORGDIR}" ] ; then
         return
@@ -581,6 +590,10 @@ prepare_arcade_organizer() {
 }
 
 should_run_arcade_organizer() {
+    true
+}
+
+should_run_arcade_organizer_2() {
     [[ "${ARCADE_ORGANIZER_FORCE_FULL_RESYNC}" == "true" ]] || \
     [ -s ${UPDATED_MRAS} ] || \
     [ ! -d ${ARCADE_ORGANIZER_ORGDIR} ] || \
