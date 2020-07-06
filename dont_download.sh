@@ -87,7 +87,7 @@ LAST_MRA_PROCESSING_PATH=
 BIOS_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_BIOS_SCRIPTS/master/bios-getter.sh"
 MAME_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_MAME_SCRIPTS/master/mame-merged-set-getter.sh"
 HBMAME_GETTER_URL="https://raw.githubusercontent.com/MAME-GETTER/MiSTer_MAME_SCRIPTS/master/hbmame-merged-set-getter.sh"
-ARCADE_ORGANIZER_URL="https://raw.githubusercontent.com/theypsilon/_arcade-organizer/master/_arcade-organizer.sh"
+ARCADE_ORGANIZER_URL="https://raw.githubusercontent.com/MAME-GETTER/_arcade-organizer/master/_arcade-organizer.sh"
 
 enable_global_log() {
     if [[ "${UPDATE_ALL_OS}" == "WINDOWS" ]] ; then return ; fi
