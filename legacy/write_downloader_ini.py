@@ -22,7 +22,7 @@ import json
 import re
 
 def main():
-    db_url_mister_devel_distribution_mister = 'https://raw.githubusercontent.com/zakk4223/Main_Mister_ZQol/downloader/db.json.zip'
+    db_url_mister_devel_distribution_mister = 'https://raw.githubusercontent.com/zakk4223/Main_Mister_ZQol/main/downloader/db.json.zip'
     db_url_mister_db9_distribution_mister = 'https://raw.githubusercontent.com/MiSTer-DB9/Distribution_MiSTer/main/dbencc.json.zip'
     db_id_distribution_mister = 'distribution_mister'
 
