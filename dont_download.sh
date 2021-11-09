@@ -139,7 +139,7 @@ DOWNLOADER_UNOFFICIALS_DB_ID="theypsilon_unofficial_distribution"
 DOWNLOADER_ARCADE_OFFSET_DB_URL="https://raw.githubusercontent.com/atrac17/Arcade_Offset/db/arcadeoffsetdb.json.zip"
 DOWNLOADER_ARCADE_OFFSET_DB_ID="arcade_offset_folder"
 
-WRITE_DOWNLOADER_INI_SCRIPT_URL="https://raw.githubusercontent.com/theypsilon/Update_All_MiSTer/master/legacy/write_downloader_ini.py"
+WRITE_DOWNLOADER_INI_SCRIPT_URL="https://raw.githubusercontent.com/zakk4223/Update_All_MiSTer/master/legacy/write_downloader_ini.py"
 WRITE_DOWNLOADER_INI_SCRIPT_PATH="/tmp/write_downloader_ini.py"
 DOWNLOADER_INI_STANDARD_PATH="/media/fat/downloader.ini"
 DOWNLOADER_INI_TEMP_PATH="/tmp/downloader.ini"
