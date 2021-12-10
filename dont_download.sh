@@ -1135,7 +1135,7 @@ support_mister() {
     TEXT="${TEXT}\nYour favorite open-source projects require your support to keep evolving!"
 
     set +e
-    dialog --keep-window --colors --title "Support MiSTer" --msgbox "${TEXT}" 25 79
+    dialog --keep-window --colors --title "Support MiSTer" --msgbox "${TEXT}" 27 81
     set -e
 }
 # # #      S E T T I N G S     S C R E E N      # # #
