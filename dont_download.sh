@@ -41,6 +41,7 @@ set_default_options() {
     LLAPI_UPDATER_INI="${EXPORTED_INI_PATH}" # Probably update_all.ini
 
     ARCADE_OFFSET_DOWNLOADER="false"
+    BIOS_DB_DOWNLOADER="false"
     TTY2OLED_FILES_DOWNLOADER="false"
     MISTERSAM_FILES_DOWNLOADER="false"
 
@@ -77,6 +78,9 @@ UPDATE_ALL_VERSION="1.4"
 UPDATE_ALL_PC_UPDATER="${UPDATE_ALL_PC_UPDATER:-false}"
 UPDATE_ALL_OS="${UPDATE_ALL_OS:-MiSTer_Linux}"
 UPDATE_ALL_LAUNCHER_MD5="ac10fbada40e3e5f133bc0eee0dd53d5"
+UPDATE_ALL_PATREON_KEY_PATH="/media/fat/Scripts/update_all.patreonkey"
+UPDATE_ALL_PATREON_KEY_SIZE="16384"
+UPDATE_ALL_PATREON_KEY_MD5Q0="00e9f6acaec74650ddd38a14334ebaef"
 AUTO_UPDATE_LAUNCHER="${AUTO_UPDATE_LAUNCHER:-true}"
 ORIGINAL_SCRIPT_PATH="${0}"
 ORIGINAL_INI_PATH="${ORIGINAL_SCRIPT_PATH%.*}.ini"
@@ -128,15 +132,6 @@ INI_REFERENCES=( \
     "NAMES_TXT_UPDATER_INI" \
     "ARCADE_ORGANIZER_INI" \
 )
-
-DOWNLOADER_DB9_DB_URL="https://raw.githubusercontent.com/MiSTer-DB9/Distribution_MiSTer/main/dbencc.json.zip"
-DOWNLOADER_JT_DB_ID="jtcores"
-DOWNLOADER_LLAPI_DB_URL="https://raw.githubusercontent.com/MiSTer-LLAPI/LLAPI_folder_MiSTer/main/llapidb.json.zip"
-DOWNLOADER_LLAPI_DB_ID="llapi_folder"
-DOWNLOADER_UNOFFICIALS_DB_URL="https://raw.githubusercontent.com/theypsilon/Distribution_Unofficial_MiSTer/main/unofficialdb.json.zip"
-DOWNLOADER_UNOFFICIALS_DB_ID="theypsilon_unofficial_distribution"
-DOWNLOADER_ARCADE_OFFSET_DB_URL="https://raw.githubusercontent.com/atrac17/Arcade_Offset/db/arcadeoffsetdb.json.zip"
-DOWNLOADER_ARCADE_OFFSET_DB_ID="arcade_offset_folder"
 
 WRITE_DOWNLOADER_INI_SCRIPT_URL="https://raw.githubusercontent.com/theypsilon/Update_All_MiSTer/master/legacy/write_downloader_ini.py"
 WRITE_DOWNLOADER_INI_SCRIPT_PATH="/tmp/write_downloader_ini.py"
@@ -401,6 +396,18 @@ initialize() {
     fi
 }
 
+has_patreon_key() {
+    if [ ! -f "${UPDATE_ALL_PATREON_KEY_PATH}" ] ; then
+        return 1
+    fi
+    if [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
+        return 1
+    fi
+    if [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
+        return 1
+    fi
+    return 0
+}
 
 MESSAGE_IGNORED_ROOT_INI_ARRAY=()
 message_ignored_root_ini() {
@@ -747,7 +754,9 @@ sequence() {
             echo "- Names TXT Updater"
         fi
     fi
-    if [[ "${BIOS_GETTER}" == "true" ]] ; then
+    if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && has_patreon_key ; then
+        echo "- BIOS Database"
+    elif [[ "${BIOS_GETTER}" == "true" ]] ; then
         echo "- BIOS Getter"
     fi
     if [[ "${MAME_GETTER}" == "true" ]] ; then
@@ -904,6 +913,10 @@ run_update_all() {
         RUNNING_DOWNLOADER="true"
     fi
 
+    if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && has_patreon_key ; then
+        RUNNING_DOWNLOADER="true"
+    fi
+
     if [[ "${TTY2OLED_FILES_DOWNLOADER}" == "true" ]] && [[ "${DOWNLOADER_WHEN_POSSIBLE}" == "true" ]] && [[ "${UPDATE_ALL_PC_UPDATER}" != "true" ]] ; then
         RUNNING_DOWNLOADER="true"
     fi
@@ -934,6 +947,18 @@ run_update_all() {
             export NAMES_SORT_CODE="${NAMES_SORT_CODE}"
         fi
         export ARCADE_OFFSET_DOWNLOADER="${ARCADE_OFFSET_DOWNLOADER}"
+        if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] ; then
+            if [ ! -f "${UPDATE_ALL_PATREON_KEY_PATH}" ] ; then
+                BIOS_DB_DOWNLOADER="false"
+            fi
+            if [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
+                BIOS_DB_DOWNLOADER="false"
+            fi
+            if [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
+                BIOS_DB_DOWNLOADER="false"
+            fi
+        fi
+        export BIOS_DB_DOWNLOADER="${BIOS_DB_DOWNLOADER}"
 
         if [ ! -f "${WORK_PATH}/downloader_initial_write" ] ; then
             touch "${WORK_PATH}/downloader_initial_write"
@@ -1089,6 +1114,30 @@ run_update_all() {
     exit ${EXIT_CODE:-1}
 }
 
+support_mister() {
+    local TEXT="Consider supporting Alexey Melnikov 'Sorgelig' for his invaluable work as the main maintainer of the MiSTer Project: \Zu\Z4patreon.com/FPGAMiSTer\Z7\Zn"
+    TEXT="${TEXT}\n"
+    TEXT="${TEXT}\nOther key contributors:"
+    TEXT="${TEXT}\n·Ace \Zu\Z4ko-fi.com/ace9921\Z7\Zn - Arcade cores"
+    TEXT="${TEXT}\n·Blackwine \Zu\Z4patreon.com/blackwine\Z7\Zn - Arcade cores"
+    TEXT="${TEXT}\n·FPGAZumSpass \Zu\Z4patreon.com/FPGAZumSpass\Z7\Zn - Console & Computer cores"
+    TEXT="${TEXT}\n·Furrtek \Zu\Z4patreon.com/furrtek\Z7\Zn - NeoGeo core & multiple chip decaps"
+    TEXT="${TEXT}\n·Jotego \Zu\Z4patreon.com/topapete\Z7\Zn - Arcade & Console cores"
+    TEXT="${TEXT}\n·MiSTer-X \Zu\Z4patreon.com/MrX_8B\Z7\Zn - Arcade cores"
+    TEXT="${TEXT}\n·Nullobject \Zu\Z4patreon.com/nullobject\Z7\Zn - Arcade cores"
+    TEXT="${TEXT}\n·Srg320 \Zu\Z4patreon.com/srg320\Z7\Zn - Console cores"
+    TEXT="${TEXT}\n·Theypsilon \Zu\Z4patreon.com/theypsilon\Z7\Zn - Downloader, Update All & Other Tools"
+    TEXT="${TEXT}\n·Atrac17 \Zu\Z4patreon.com/atrac17\Z7\Zn - MRAs & Modelines"
+    TEXT="${TEXT}\n·d0pefish \Zu\Z4ko-fi.com/d0pefish\Z7\Zn - mt32pi author"
+    TEXT="${TEXT}\n·Artemio \Zu\Z4patreon.com/aurbina\Z7\Zn - Testing tools"
+    TEXT="${TEXT}\n·Pinobatch \Zu\Z4patreon.com/pineight\Z7\Zn - Testing tools"
+    TEXT="${TEXT}\n"
+    TEXT="${TEXT}\nYour favorite open-source projects require your support to keep evolving!"
+
+    set +e
+    dialog --keep-window --colors --title "Support MiSTer" --msgbox "${TEXT}" 23 77
+    set -e
+}
 # # #      S E T T I N G S     S C R E E N      # # #
 
 ### SETTINGS GLOBAL TMP VARS ##
@@ -1204,7 +1253,7 @@ settings_menu_update_all() {
                 --default-item "${DEFAULT_SELECTION}" \
                 --cancel-label "Abort" --ok-label "Select" --extra-button --extra-label "Toggle" \
                 --title "Update All ${UPDATE_ALL_VERSION} Settings" \
-                --menu "Settings loaded from '$(settings_normalize_ini_file ${EXPORTED_INI_PATH})'" 19 75 25 \
+                --menu "Settings loaded from '$(settings_normalize_ini_file ${EXPORTED_INI_PATH})'" 20 75 25 \
                 "${OPT1_MAIN}"  "$(settings_active_tag ${MAIN_UPDATER}) Main MiSTer cores from $([[ ${ENCC_FORKS} == 'true' ]] && echo 'MiSTer-DB9' || echo 'MiSTer-devel')" \
                 "${OPT2_JOTEGO}" "$(settings_active_tag ${JOTEGO_UPDATER}) Cores made by Jotego ${OPT2_JOTEGO_PAREN}" \
                 "${OPT3_UNOFFICIAL}"  "$(settings_active_tag ${UNOFFICIAL_UPDATER}) Some unofficial cores" \
@@ -1215,6 +1264,7 @@ settings_menu_update_all() {
                 "${OPT8_NAMES}" "$(settings_active_tag ${NAMES_TXT_UPDATER}) Better core names in the menus" \
                 "9 Arcade Organizer" "$(settings_active_tag ${ARCADE_ORGANIZER}) Creates folder for easy navigation" \
                 "0 Misc" "" \
+                "Patrons Menu" "" \
                 "SAVE" "Writes all changes to the INI file/s" \
                 "EXIT and RUN UPDATE ALL" "" 2> ${TMP}
             DEFAULT_SELECTION="$?"
@@ -1233,6 +1283,16 @@ settings_menu_update_all() {
                         "${OPT8_NAMES}") settings_menu_names_txt ;;
                         "9 Arcade Organizer") settings_menu_2beta_arcade_organizer ;;
                         "0 Misc") settings_menu_misc ;;
+                        "Patrons Menu")
+                            if has_patreon_key ; then
+                                settings_menu_patrons
+                            else
+                                set +e
+                                dialog --keep-window --colors --title "Patreon Key not found!" --msgbox "This menu contains exclusive content for patrons only.\n\nGet your 'Patreon Key' at \Zu\Z4patreon.com/theypsilon\Z7\Zn and put it on the \Zb/Scripts\Zn folder to unlock early access and experimental options.\n\nThank you so much for your support!" 10 77
+                                set -e
+                                support_mister
+                            fi
+                            ;;
                         "SAVE") settings_menu_save ;;
                         "EXIT and RUN UPDATE ALL") settings_menu_exit_and_run ;;
                         *) settings_menu_cancel ;;
@@ -1250,6 +1310,7 @@ settings_menu_update_all() {
                         "${OPT8_NAMES}") settings_change_var "NAMES_TXT_UPDATER" "$(settings_domain_ini_file ${EXPORTED_INI_PATH})" ;;
                         "9 Arcade Organizer") settings_change_var "ARCADE_ORGANIZER" "$(settings_domain_ini_file ${EXPORTED_INI_PATH})" ;;
                         "0 Misc") ;;
+                        "Patrons") ;;
                         "SAVE") ;;
                         "EXIT and RUN UPDATE ALL") ;;
                         *) settings_menu_cancel ;;
@@ -3074,6 +3135,57 @@ settings_menu_misc() {
     rm ${TMP}
 }
 
+settings_menu_patrons() {
+    local TMP=$(mktemp)
+
+    SETTINGS_OPTIONS_BIOS_DB_DOWNLOADER=("false" "true")
+
+    while true ; do
+        (
+            local BIOS_DB_DOWNLOADER="${SETTINGS_OPTIONS_BIOS_DB_DOWNLOADER[0]}"
+
+            load_vars_from_ini "$(settings_domain_ini_file ${EXPORTED_INI_PATH})" "BIOS_DB_DOWNLOADER"
+
+            local DEFAULT_SELECTION=
+            if [ -s ${TMP} ] ; then
+                DEFAULT_SELECTION="$(cat ${TMP})"
+            else
+                DEFAULT_SELECTION="1 Experimental BIOS Database"
+            fi
+
+            set +e
+            dialog --keep-window --default-item "${DEFAULT_SELECTION}" --cancel-label "Back" --ok-label "Select" --title "Patrons Menu" \
+                --menu "" 8 50 25 \
+                "1 Experimental BIOS Database" "$(settings_menu_yesno_bool_text ${BIOS_DB_DOWNLOADER})" \
+                "BACK"  "" 2> ${TMP}
+            DEFAULT_SELECTION="$?"
+            set -e
+
+            if [[ "${DEFAULT_SELECTION}" == "0" ]] ; then
+                DEFAULT_SELECTION="$(cat ${TMP})"
+            fi
+
+            case "${DEFAULT_SELECTION}" in
+                "") ;;
+                "1 Experimental BIOS Database")
+                    if [[ "${BIOS_DB_DOWNLOADER}" == "false" ]] ; then
+                        set +e
+                        dialog --keep-window --colors --title "BIOS Database Activated" --msgbox "The BIOS Database replaces the funcionality of the BIOS Getter.\n\nWhile the BIOS Database is ACTIVE, the BIOS Getter will not run." 7 70
+                        set -e
+                    fi
+                    settings_change_var "BIOS_DB_DOWNLOADER" "$(settings_domain_ini_file ${EXPORTED_INI_PATH})"
+                    ;;
+                *) echo > "${SETTINGS_TMP_BREAK}" ;;
+            esac
+        )
+        if [ -f "${SETTINGS_TMP_BREAK}" ] ; then
+            rm "${SETTINGS_TMP_BREAK}" 2> /dev/null
+            break
+        fi
+    done
+    rm ${TMP}
+}
+
 settings_menu_connection_problem() {
     set +e
     dialog --keep-window --msgbox "Network Problem" 5 20
@@ -3187,6 +3299,19 @@ settings_menu_save() {
                     export LLAPI_UPDATER="${LLAPI_UPDATER}"
                 fi
                 export ARCADE_OFFSET_DOWNLOADER="${ARCADE_OFFSET_DOWNLOADER}"
+                if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] ; then
+                    if [ ! -f "${UPDATE_ALL_PATREON_KEY_PATH}" ] ; then
+                        BIOS_DB_DOWNLOADER="false"
+                    fi
+                    if [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
+                        BIOS_DB_DOWNLOADER="false"
+                    fi
+                    if [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
+                        BIOS_DB_DOWNLOADER="false"
+                    fi
+                fi
+                export BIOS_DB_DOWNLOADER="${BIOS_DB_DOWNLOADER}"
+
                 "${WRITE_DOWNLOADER_INI_SCRIPT_PATH}" "${DOWNLOADER_INI_STANDARD_PATH}"
             fi
             set +e
