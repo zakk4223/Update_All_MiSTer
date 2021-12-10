@@ -1135,7 +1135,7 @@ support_mister() {
     TEXT="${TEXT}\nYour favorite open-source projects require your support to keep evolving!"
 
     set +e
-    dialog --keep-window --colors --title "Support MiSTer" --msgbox "${TEXT}" 23 77
+    dialog --keep-window --colors --title "Support MiSTer" --msgbox "${TEXT}" 25 79
     set -e
 }
 # # #      S E T T I N G S     S C R E E N      # # #
@@ -1288,7 +1288,7 @@ settings_menu_update_all() {
                                 settings_menu_patrons
                             else
                                 set +e
-                                dialog --keep-window --colors --title "Patreon Key not found!" --msgbox "This menu contains exclusive content for patrons only.\n\nGet your 'Patreon Key' at \Zu\Z4patreon.com/theypsilon\Z7\Zn and put it on the \Zb/Scripts\Zn folder to unlock early access and experimental options.\n\nThank you so much for your support!" 10 77
+                                dialog --keep-window --colors --title "Patreon Key not found!" --msgbox "This menu contains exclusive content for patrons only.\n\nGet your 'Patreon Key' at \Zu\Z4patreon.com/theypsilon\Z7\Zn and put it on the \Zb/Scripts\Zn folder to unlock early access and experimental options.\n\nThank you so much for your support!" 10 75
                                 set -e
                                 support_mister
                             fi
