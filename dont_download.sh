@@ -1129,7 +1129,7 @@ support_mister() {
     TEXT="${TEXT}\n·Theypsilon \Zu\Z4patreon.com/theypsilon\Z7\Zn - Downloader, Update All & Other Tools"
     TEXT="${TEXT}\n·Atrac17 \Zu\Z4patreon.com/atrac17\Z7\Zn - MRAs & Modelines"
     TEXT="${TEXT}\n·d0pefish \Zu\Z4ko-fi.com/d0pefish\Z7\Zn - mt32pi author"
-    TEXT="${TEXT}\n·Artemio \Zu\Z4patreon.com/aurbina\Z7\Zn & Pinobatch \Zu\Z4patreon.com/pineight\Z7\Zn - Testing tools"
+    TEXT="${TEXT}\n·Artemio \Zu\Z4patreon.com/aurbina\Z7\Zn Pinobatch \Zu\Z4patreon.com/pineight\Z7\Zn - Testing tools"
     TEXT="${TEXT}\n"
     TEXT="${TEXT}\nYour favorite open-source projects require your support to keep evolving!"
 
