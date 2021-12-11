@@ -951,10 +951,10 @@ run_update_all() {
             if [ ! -f "${UPDATE_ALL_PATREON_KEY_PATH}" ] ; then
                 BIOS_DB_DOWNLOADER="false"
             fi
-            if [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
+            if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
                 BIOS_DB_DOWNLOADER="false"
             fi
-            if [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
+            if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
                 BIOS_DB_DOWNLOADER="false"
             fi
         fi
@@ -3302,10 +3302,10 @@ settings_menu_save() {
                     if [ ! -f "${UPDATE_ALL_PATREON_KEY_PATH}" ] ; then
                         BIOS_DB_DOWNLOADER="false"
                     fi
-                    if [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
+                    if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && [[ "$(du -b ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_SIZE}" ]] ; then
                         BIOS_DB_DOWNLOADER="false"
                     fi
-                    if [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
+                    if [[ "${BIOS_DB_DOWNLOADER}" == "true" ]] && [[ "$(md5sum ${UPDATE_ALL_PATREON_KEY_PATH} | awk '{print $1}')" != "${UPDATE_ALL_PATREON_KEY_MD5Q0}" ]] ; then
                         BIOS_DB_DOWNLOADER="false"
                     fi
                 fi
