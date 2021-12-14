@@ -26,8 +26,8 @@ def main():
     db_url_mister_db9_distribution_mister = 'https://raw.githubusercontent.com/MiSTer-DB9/Distribution_MiSTer/main/dbencc.json.zip'
     db_id_distribution_mister = 'distribution_mister'
 
-    db_url_jtbin_jtcores = 'https://raw.githubusercontent.com/jotego/jtcores_mister/main/jtbindb.json.zip'
-    db_url_jtstable_jtcores = 'https://raw.githubusercontent.com/theypsilon/JT_Cores_MiSTer/jtstable/jtstabledb.json.zip'
+    db_url_jtbin_jtcores = 'https://raw.githubusercontent.com/jotego/jtpremium/main/jtbindb.json.zip'
+    db_url_jtstable_jtcores = 'https://raw.githubusercontent.com/jotego/jtcores_mister/main/jtbindb.json.zip'
     db_id_jtcores = 'jtcores'
 
     db_url_llapi_folder = 'https://raw.githubusercontent.com/MiSTer-LLAPI/LLAPI_folder_MiSTer/main/llapidb.json.zip'
@@ -44,7 +44,16 @@ def main():
     db_url_tty2oled_files = 'https://raw.githubusercontent.com/venice1200/MiSTer_tty2oled/main/tty2oleddb.json'
     db_id_tty2oled_files = 'tty2oled_files'
 
-    db_ids = [db_id_distribution_mister, db_id_jtcores, db_id_llapi_folder, db_id_theypsilon_unofficial_distribution, db_id_arcade_offset_folder, db_id_names_txt, db_id_tty2oled_files]
+    db_url_i2c2oled_files = 'https://raw.githubusercontent.com/venice1200/MiSTer_i2c2oled/main/i2c2oleddb.json'
+    db_id_i2c2oled_files = 'i2c2oled_files'
+ 
+    db_url_mistersam_files = 'https://raw.githubusercontent.com/mrchrisster/MiSTer_SAM/main/MiSTer_SAMdb.json'
+    db_id_mistersam_files = 'MiSTer_SAM_files'
+
+    db_url_bios_db = '¤¬¥¥jfa¢¬` ¦­§£¤§£¦¥¦^¤_«±¥¥£¡e©£«ar¡¤¥ty}¡©a _«e£§£'
+    db_id_bios_db = 'bios_db'
+
+    db_ids = [db_id_distribution_mister, db_id_jtcores, db_id_llapi_folder, db_id_theypsilon_unofficial_distribution, db_id_arcade_offset_folder, db_id_names_txt, db_id_tty2oled_files, db_id_i2c2oled_files, db_id_mistersam_files, db_id_bios_db]
 
     def env(name):
         return os.environ.get(name, 'false') == 'true'
@@ -62,6 +71,9 @@ def main():
     arcade_offset_downloader = env('ARCADE_OFFSET_DOWNLOADER')
     names_txt_updater = env('NAMES_TXT_UPDATER')
     tty2oled_files_downloader = env('TTY2OLED_FILES_DOWNLOADER')
+    i2c2oled_files_downloader = env('I2C2OLED_FILES_DOWNLOADER')
+    mistersam_files_downloader = env('MISTERSAM_FILES_DOWNLOADER')
+    bios_db_downloader = env('BIOS_DB_DOWNLOADER')
 
     ini_path = sys.argv[1]
 
@@ -81,8 +93,11 @@ def main():
         print(e)
 
     def section(id):
-        if id not in ini:
-            ini[id] = {}
+        for k, v in ini.items():
+            if k.lower() == id.lower():
+                return v
+
+        ini[id] = {}
         return ini[id]
 
     key_db_url = 'db_url'
@@ -121,6 +136,21 @@ def main():
         section(db_id_tty2oled_files)[key_db_url] = db_url_tty2oled_files
     elif db_id_tty2oled_files in ini:
         ini.pop(db_id_tty2oled_files)
+    
+    if i2c2oled_files_downloader:
+        section(db_id_i2c2oled_files)[key_db_url] = db_url_i2c2oled_files
+    elif db_id_i2c2oled_files in ini:
+        ini.pop(db_id_i2c2oled_files)
+
+    if mistersam_files_downloader:
+        section(db_id_mistersam_files)[key_db_url] = db_url_mistersam_files
+    elif db_id_mistersam_files in ini:
+        ini.pop(db_id_mistersam_files)
+    
+    if bios_db_downloader:
+        section(db_id_bios_db)[key_db_url] = decode_with_patreonkey(db_url_bios_db)
+    elif db_id_bios_db in ini:
+        ini.pop(db_id_bios_db)
 
     after = json.dumps(ini)
 
@@ -238,6 +268,29 @@ def get_db_url_names_txt():
     }
 
     return names_dict.get(names_region, {}).get(names_char_code, {}).get(names_sort_code, db_url_names_CHAR18_Common_JP_txt)
+
+def decode_with_patreonkey(string):
+    try:
+        return decode(calc_patreonkey(), string)
+    except Exception as e:
+        print(e)
+        return 'error'
+
+def calc_patreonkey():
+    patreonkey = 0
+    with open('/media/fat/Scripts/update_all.patreonkey', 'rb') as f:
+        for c in f.read():
+            patreonkey += c
+    return str(patreonkey)
+
+def decode(key, string):
+    encoded_chars = []
+    for i in range(len(string)):
+        key_c = key[i % len(key)]
+        encoded_c = chr((ord(string[i]) - ord(key_c) + 256) % 256)
+        encoded_chars.append(encoded_c)
+    encoded_string = ''.join(encoded_chars)
+    return encoded_string
 
 if __name__ == '__main__':
     main()
