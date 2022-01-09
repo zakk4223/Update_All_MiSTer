@@ -136,7 +136,7 @@ INI_REFERENCES=( \
     "ARCADE_ORGANIZER_INI" \
 )
 
-WRITE_DOWNLOADER_INI_SCRIPT_URL="https://raw.githubusercontent.com/theypsilon/Update_All_MiSTer/master/legacy/write_downloader_ini.py"
+WRITE_DOWNLOADER_INI_SCRIPT_URL="https://raw.githubusercontent.com/zakk4223/Update_All_MiSTer/master/legacy/write_downloader_ini.py"
 WRITE_DOWNLOADER_INI_SCRIPT_PATH="/tmp/write_downloader_ini.py"
 DOWNLOADER_INI_STANDARD_PATH="/media/fat/downloader.ini"
 DOWNLOADER_INI_TEMP_PATH="/tmp/downloader.ini"
